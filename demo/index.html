@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aki-info-detect | Browser Detection Library</title>
+  <meta name="description" content="Lightweight JavaScript library for detecting device, browser, hardware, and network information">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #eee;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+    
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { color: #00d4ff; margin-bottom: 10px; font-size: 2.5rem; }
+    .subtitle { color: #888; margin-bottom: 15px; }
+    .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .badges a { text-decoration: none; }
+    .badges img { height: 22px; }
+
+    .install-box {
+      background: #0f3460;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .install-box code { font-size: 0.95rem; color: #4ecca3; }
+    .install-box button {
+      background: #4ecca3;
+      color: #1a1a2e;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .install-box button:hover { background: #3dbb94; }
+
+    .important-note {
+      background: linear-gradient(135deg, #ff6b6b22, #ff6b6b11);
+      border: 1px solid #ff6b6b55;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+    }
+    .important-note h3 { color: #ff6b6b; margin-bottom: 8px; font-size: 0.9rem; }
+    .important-note p { font-size: 0.85rem; color: #ccc; }
+    .important-note code {
+      display: block;
+      background: #0f3460;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      overflow-x: auto;
+      color: #4ecca3;
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #0f346033;
+    }
+    .card h2 { color: #4ecca3; font-size: 1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #0f346055; }
+    .row:last-child { border-bottom: none; }
+    .label { color: #888; }
+    .value { color: #4ecca3; font-weight: 500; text-align: right; max-width: 60%; word-break: break-word; }
+    .value.loading { color: #ffaa00; }
+    .value.error { color: #ff6b6b; }
+
+    .actions { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      background: #00d4ff;
+      color: #1a1a2e;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: transform 0.1s, background 0.2s;
+    }
+    button:hover { background: #00b8e6; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .raw-output {
+      background: #0f3460;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 30px;
+      overflow-x: auto;
+    }
+    .raw-output h2 { color: #4ecca3; margin-bottom: 10px; }
+    pre { font-size: 0.75rem; line-height: 1.5; color: #aaa; }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #0f346055;
+      color: #666;
+      font-size: 0.85rem;
+    }
+    footer a { color: #00d4ff; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .row { flex-direction: column; gap: 4px; }
+      .value { text-align: left; max-width: 100%; }
+      .install-box { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔍 aki-info-detect</h1>
+      <p class="subtitle">Lightweight JavaScript library for browser, device & network detection</p>
+      <div class="badges">
+        <a href="https://www.npmjs.com/package/aki-info-detect"><img src="https://img.shields.io/npm/v/aki-info-detect?color=00d4ff&label=npm" alt="npm version"></a>
+        <a href="https://www.npmjs.com/package/aki-info-detect"><img src="https://img.shields.io/npm/dm/aki-info-detect?color=4ecca3" alt="downloads"></a>
+        <a href="https://github.com/lacvietanh/akiInfoDetect.js"><img src="https://img.shields.io/github/stars/lacvietanh/akiInfoDetect.js?style=social" alt="GitHub stars"></a>
+        <a href="https://bundlephobia.com/package/aki-info-detect"><img src="https://img.shields.io/bundlephobia/minzip/aki-info-detect?color=ff6b6b&label=gzip" alt="bundle size"></a>
+      </div>
+    </header>
+
+    <div class="install-box">
+      <code>npm install aki-info-detect</code>
+      <button onclick="copyInstall()">📋 Copy</button>
+    </div>
+
+    <div class="important-note">
+      <h3>⚠️ Server Headers Required for Full Hardware Detection</h3>
+      <p>To enable deep hardware detection via Client Hints API, your server must send these response headers:</p>
+      <code>Accept-CH: Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Model, Sec-CH-UA-Full-Version-List</code>
+    </div>
+
+    <div class="grid">
+      <!-- Browser & Device -->
+      <div class="card">
+        <h2>🌐 Browser & Device</h2>
+        <div class="row"><span class="label">Browser</span><span class="value" id="browser">Loading...</span></div>
+        <div class="row"><span class="label">Product</span><span class="value" id="product">—</span></div>
+        <div class="row"><span class="label">Manufacturer</span><span class="value" id="manufacturer">—</span></div>
+        <div class="row"><span class="label">Is Mobile</span><span class="value" id="isMobile">—</span></div>
+        <div class="row"><span class="label">Languages</span><span class="value" id="language">—</span></div>
+      </div>
+
+      <!-- Operating System -->
+      <div class="card">
+        <h2>💻 Operating System</h2>
+        <div class="row"><span class="label">OS Name</span><span class="value" id="osName">Loading...</span></div>
+        <div class="row"><span class="label">Version</span><span class="value" id="osVersion">—</span></div>
+        <div class="row"><span class="label">Full String</span><span class="value" id="osString">—</span></div>
+      </div>
+
+      <!-- Hardware -->
+      <div class="card">
+        <h2>⚙️ Hardware</h2>
+        <div class="row"><span class="label">CPU</span><span class="value" id="cpu">Loading...</span></div>
+        <div class="row"><span class="label">Cores</span><span class="value" id="cpuCore">—</span></div>
+        <div class="row"><span class="label">Architecture</span><span class="value" id="arch">—</span></div>
+        <div class="row"><span class="label">RAM</span><span class="value" id="ram">—</span></div>
+        <div class="row"><span class="label">GPU</span><span class="value" id="gpu">—</span></div>
+      </div>
+
+      <!-- Battery -->
+      <div class="card">
+        <h2>🔋 Battery</h2>
+        <div class="row"><span class="label">Charging</span><span class="value" id="charging">—</span></div>
+        <div class="row"><span class="label">Level</span><span class="value" id="batteryLevel">—</span></div>
+      </div>
+
+      <!-- Network -->
+      <div class="card">
+        <h2>🌍 Network</h2>
+        <div class="row"><span class="label">IP Address</span><span class="value loading" id="ip">Click Fetch...</span></div>
+        <div class="row"><span class="label">ISP</span><span class="value" id="isp">—</span></div>
+        <div class="row"><span class="label">Country</span><span class="value" id="country">—</span></div>
+        <div class="actions">
+          <button onclick="fetchNetwork()">Fetch Network Info</button>
+        </div>
+      </div>
+
+      <!-- Screen & Connection -->
+      <div class="card">
+        <h2>📱 Screen & Connection</h2>
+        <div class="row"><span class="label">Resolution</span><span class="value" id="resolution">—</span></div>
+        <div class="row"><span class="label">Pixel Ratio</span><span class="value" id="pixelRatio">—</span></div>
+        <div class="row"><span class="label">Connection</span><span class="value" id="connection">—</span></div>
+        <div class="row"><span class="label">Location</span><span class="value" id="location">Click to get</span></div>
+        <div class="actions">
+          <button onclick="fetchLocation()">📍 Get Location</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="raw-output">
+      <h2>📋 Raw JSON Output</h2>
+      <pre id="rawOutput">Loading...</pre>
+    </div>
+
+    <footer>
+      <p>
+        <a href="https://github.com/lacvietanh/akiInfoDetect.js">GitHub</a> · 
+        <a href="https://www.npmjs.com/package/aki-info-detect">npm</a> · 
+        MIT License · 
+        Made with ❤️ by <a href="https://github.com/lacvietanh">lacvietanh</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Load from npm CDN for production -->
+  <script type="module">
+    // Use unpkg CDN for the library
+    import akiInfoDetect from 'https://unpkg.com/aki-info-detect@latest/dist/aki-info-detect.js';
+
+    let info = null;
+
+    async function init() {
+      try {
+        info = await akiInfoDetect();
+        
+        // Browser & Device
+        document.getElementById('browser').textContent = info.browser;
+        document.getElementById('product').textContent = info.product || '—';
+        document.getElementById('manufacturer').textContent = info.manufacturer || '—';
+        document.getElementById('isMobile').textContent = info.isMobile ? 'Yes ✓' : 'No';
+        document.getElementById('language').textContent = info.language || '—';
+
+        // OS
+        document.getElementById('osName').textContent = info.os.name || '—';
+        document.getElementById('osVersion').textContent = info.os.version || '—';
+        document.getElementById('osString').textContent = info.os.string || '—';
+
+        // Hardware
+        document.getElementById('cpu').textContent = info.CPU || '—';
+        document.getElementById('cpuCore').textContent = info.CPUCore || '—';
+        document.getElementById('arch').textContent = info.arch || '—';
+        document.getElementById('ram').textContent = info.RAM ? `${info.RAM} GB` : '—';
+        document.getElementById('gpu').textContent = info.GPU || '—';
+
+        // Battery
+        document.getElementById('charging').textContent = info.battery.level > 0 
+          ? (info.battery.isCharging ? 'Yes ⚡' : 'No') 
+          : 'Not available';
+        document.getElementById('batteryLevel').textContent = info.battery.level > 0 
+          ? `${info.battery.level}%` 
+          : '—';
+
+        // Screen
+        const screen = info.getScreen();
+        document.getElementById('resolution').textContent = `${screen.width} × ${screen.height}`;
+        document.getElementById('pixelRatio').textContent = screen.pixelRatio + 'x';
+
+        // Connection
+        const conn = info.getConnection();
+        document.getElementById('connection').textContent = conn.type !== 'unknown' 
+          ? `${conn.type}${conn.downlink ? ` (${conn.downlink} Mbps)` : ''}`
+          : 'Not available';
+
+        // Raw output
+        const rawData = { ...info };
+        delete rawData.getIP;
+        delete rawData.getISP;
+        delete rawData.getCountry;
+        delete rawData.getConnection;
+        delete rawData.getScreen;
+        delete rawData.getLocation;
+        rawData.screen = screen;
+        rawData.connection = conn;
+        document.getElementById('rawOutput').textContent = JSON.stringify(rawData, null, 2);
+
+      } catch (err) {
+        document.getElementById('rawOutput').textContent = 'Error: ' + err.message;
+      }
+    }
+
+    // Network fetch
+    window.fetchNetwork = async function() {
+      if (!info) return;
+      document.getElementById('ip').className = 'value loading';
+      document.getElementById('ip').textContent = 'Fetching...';
+      try {
+        const [ip, isp, country] = await Promise.all([
+          info.getIP(),
+          info.getISP(),
+          info.getCountry()
+        ]);
+        document.getElementById('ip').className = 'value';
+        document.getElementById('ip').textContent = ip || 'Not available';
+        document.getElementById('isp').textContent = isp || '—';
+        document.getElementById('country').textContent = country || '—';
+      } catch (err) {
+        document.getElementById('ip').className = 'value error';
+        document.getElementById('ip').textContent = 'Error';
+      }
+    };
+
+    // Location fetch
+    window.fetchLocation = async function() {
+      if (!info) return;
+      document.getElementById('location').className = 'value loading';
+      document.getElementById('location').textContent = 'Getting location...';
+      try {
+        const loc = await info.getLocation();
+        document.getElementById('location').className = 'value';
+        document.getElementById('location').textContent = loc.latitude 
+          ? `${loc.latitude.toFixed(4)}, ${loc.longitude.toFixed(4)}`
+          : 'Not available';
+      } catch (err) {
+        document.getElementById('location').className = 'value error';
+        document.getElementById('location').textContent = 'Permission denied';
+      }
+    };
+
+    // Copy install command
+    window.copyInstall = function() {
+      navigator.clipboard.writeText('npm install aki-info-detect');
+      const btn = document.querySelector('.install-box button');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    };
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>

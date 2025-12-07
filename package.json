@@ -1,0 +1,62 @@
+{
+  "name": "aki-info-detect",
+  "version": "2.0.0",
+  "description": "Lightweight JavaScript library for detecting device, browser, hardware, and network information with UMD/ESM support",
+  "author": "lacvietanh",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lacvietanh/akiInfoDetect.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lacvietanh/akiInfoDetect.js/issues"
+  },
+  "homepage": "https://github.com/lacvietanh/akiInfoDetect.js#readme",
+  "keywords": [
+    "device-detection",
+    "browser-detection",
+    "platform-detection",
+    "user-agent",
+    "client-hints",
+    "hardware-info",
+    "gpu-detection",
+    "network-info",
+    "ip-detection",
+    "system-info"
+  ],
+  "type": "module",
+  "main": "./dist/aki-info-detect.umd.cjs",
+  "module": "./dist/aki-info-detect.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/aki-info-detect.js",
+      "require": "./dist/aki-info-detect.umd.cjs",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && npm run build:types",
+    "build:types": "mkdir -p dist/types && cp src/index.d.ts dist/types/index.d.ts",
+    "preview": "vite preview",
+    "serve": "node server.js",
+    "lint": "eslint src/**/*.js",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "terser": "^5.44.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "sideEffects": false
+}
