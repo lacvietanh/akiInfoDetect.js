@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aki-info-detect | Device Detection Library</title>
+  <meta name="description" content="Lightweight JavaScript library for detecting device, browser, hardware, and network information">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050506;
+      --bg-secondary: #0c0c0e;
+      --bg-card: #111114;
+      --bg-hover: #18181c;
+      --border: #1e1e23;
+      --border-light: #2a2a32;
+      --text-primary: #f5f5f7;
+      --text-secondary: #8a8a93;
+      --text-muted: #55555d;
+      --accent: #fbbf24;
+      --accent-secondary: #f59e0b;
+      --accent-dim: #a16207;
+      --accent-glow: rgba(251, 191, 36, 0.08);
+      --success: #4ade80;
+      --error: #f87171;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { font-size: 15px; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(251, 191, 36, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(251, 191, 36, 0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badges img { height: 20px; opacity: 0.7; transition: opacity 0.2s; }
+    .badges a:hover img { opacity: 1; }
+
+    .install-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .install-box code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .install-box button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 5px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .install-box button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+    }
+
+    .tab:hover { color: var(--text-primary); }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid (Demo tab) */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .card-icon {
+      width: 30px;
+      height: 30px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .card-body { padding: 4px 0; }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .row:last-child { border-bottom: none; }
+    .row:hover { background: var(--bg-hover); }
+
+    .label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      text-align: right;
+      max-width: 60%;
+      word-break: break-word;
+    }
+    .value.loading { color: var(--accent); }
+    .value.error { color: var(--error); }
+    .value.success { color: var(--success); }
+    .value.muted { color: var(--text-muted); }
+
+    .actions {
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+    button:active { transform: scale(0.98); }
+
+    .output {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .output-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .output-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .output-body {
+      padding: 14px 16px;
+      max-height: 280px;
+      overflow: auto;
+    }
+
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Documentation styles */
+    .docs-content {
+      max-width: 900px;
+    }
+
+    .docs-content h2 {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .docs-content h3 {
+      font-size: 1.15rem;
+      margin: 20px 0 10px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .docs-content p {
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .docs-content ul {
+      margin: 10px 0 20px 20px;
+      color: var(--text-secondary);
+    }
+
+    .docs-content li {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .docs-content code {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    .docs-content pre {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 8px;
+      margin: 12px 0 20px;
+      overflow-x: auto;
+    }
+
+    .docs-content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--text-muted);
+    }
+
+    .note-box {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.04) 0%, rgba(251, 191, 36, 0.02) 100%);
+      border: 1px solid rgba(251, 191, 36, 0.15);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+
+    .note-box strong {
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .feature-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-item:hover { border-color: var(--border-light); }
+
+    .feature-item strong {
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-credit {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .footer-credit a { color: var(--accent); text-decoration: none; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+    @media (max-width: 639px) {
+      html { font-size: 14px; }
+      .container { padding: 20px 14px 40px; }
+      header { margin-bottom: 20px; padding-bottom: 20px; }
+      h1 { font-size: 1.5rem; }
+      .header-meta { flex-direction: column; gap: 12px; }
+      .tabs { overflow-x: auto; }
+      .tab { padding: 10px 16px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+  
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <h1>aki-info-detect</h1>
+      </div>
+      <p class="subtitle">Lightweight browser, device & network detection library</p>
+      
+      <div class="header-meta">
+        <div class="install-box">
+          <code>npm i aki-info-detect</code>
+          <button onclick="copyInstall()">Copy</button>
+        </div>
+        <div class="badges">
+          <a href="https://www.npmjs.com/package/aki-info-detect"><img src="https://img.shields.io/npm/v/aki-info-detect?color=f59e0b&label=npm&style=flat-square" alt="npm"></a>
+          <a href="https://bundlephobia.com/package/aki-info-detect"><img src="https://img.shields.io/bundlephobia/minzip/aki-info-detect?color=22c55e&label=gzip&style=flat-square" alt="size"></a>
+          <a href="https://github.com/lacvietanh/akiInfoDetect.js"><img src="https://img.shields.io/github/stars/lacvietanh/akiInfoDetect.js?style=flat-square&color=8b5cf6" alt="stars"></a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="demo">Demo</button>
+      <button class="tab" data-tab="docs">Documentation</button>
+      <button class="tab" data-tab="api">API Reference</button>
+    </div>
+
+    <!-- Demo Tab -->
+    <div class="tab-content active" id="demo">
+      <div class="note-box">
+        <strong>⚠️ Server Headers Required:</strong> For deep hardware detection via Client Hints API, configure: 
+        <code>Accept-CH: Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness</code>
+      </div>
+
+      <div class="grid">
+        <!-- Browser -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🌐</div>
+            <div class="card-title">Browser</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Name</span><span class="value" id="browser">—</span></div>
+            <div class="row"><span class="label">Product</span><span class="value" id="product">—</span></div>
+            <div class="row"><span class="label">Mobile</span><span class="value" id="isMobile">—</span></div>
+            <div class="row"><span class="label">Language</span><span class="value" id="language">—</span></div>
+          </div>
+        </div>
+
+        <!-- OS -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">💻</div>
+            <div class="card-title">Operating System</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Name</span><span class="value" id="osName">—</span></div>
+            <div class="row"><span class="label">Version</span><span class="value" id="osVersion">—</span></div>
+            <div class="row"><span class="label">Platform</span><span class="value" id="osString">—</span></div>
+          </div>
+        </div>
+
+        <!-- CPU -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">⚙️</div>
+            <div class="card-title">Processor</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">CPU</span><span class="value" id="cpu">—</span></div>
+            <div class="row"><span class="label">Cores</span><span class="value" id="cpuCore">—</span></div>
+            <div class="row"><span class="label">Architecture</span><span class="value" id="arch">—</span></div>
+          </div>
+        </div>
+
+        <!-- Memory & GPU -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🎮</div>
+            <div class="card-title">Memory & Graphics</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">RAM</span><span class="value" id="ram">—</span></div>
+            <div class="row"><span class="label">GPU</span><span class="value" id="gpu">—</span></div>
+            <div class="row"><span class="label">Manufacturer</span><span class="value" id="manufacturer">—</span></div>
+          </div>
+        </div>
+
+        <!-- Battery -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🔋</div>
+            <div class="card-title">Battery</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Level</span><span class="value" id="batteryLevel">—</span></div>
+            <div class="row"><span class="label">Charging</span><span class="value" id="charging">—</span></div>
+          </div>
+        </div>
+
+        <!-- Screen -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📱</div>
+            <div class="card-title">Display</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Resolution</span><span class="value" id="resolution">—</span></div>
+            <div class="row"><span class="label">Pixel Ratio</span><span class="value" id="pixelRatio">—</span></div>
+            <div class="row"><span class="label">Color Depth</span><span class="value" id="colorDepth">—</span></div>
+          </div>
+        </div>
+
+        <!-- Connection -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📶</div>
+            <div class="card-title">Connection</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Type</span><span class="value" id="connType">—</span></div>
+            <div class="row"><span class="label">Downlink</span><span class="value" id="downlink">—</span></div>
+            <div class="row"><span class="label">RTT</span><span class="value" id="rtt">—</span></div>
+          </div>
+        </div>
+
+        <!-- Network -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🌍</div>
+            <div class="card-title">Network</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">IP</span><span class="value loading" id="ip">Click fetch</span></div>
+            <div class="row"><span class="label">ISP</span><span class="value" id="isp">—</span></div>
+            <div class="row"><span class="label">Country</span><span class="value" id="country">—</span></div>
+          </div>
+          <div class="actions">
+            <button onclick="fetchNetwork()">Fetch Network</button>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📍</div>
+            <div class="card-title">Location</div>
+          </div>
+          <div class="card-body">
+            <div class="row"><span class="label">Latitude</span><span class="value" id="lat">—</span></div>
+            <div class="row"><span class="label">Longitude</span><span class="value" id="lng">—</span></div>
+            <div class="row"><span class="label">Accuracy</span><span class="value" id="accuracy">—</span></div>
+          </div>
+          <div class="actions">
+            <button onclick="fetchLocation()">Get Location</button>
+          </div>
+        </div>
+
+        <!-- Raw Output -->
+        <div class="output">
+          <div class="output-header">
+            <div class="output-title">
+              <span>📋</span>
+              <span>Raw JSON Output</span>
+            </div>
+            <button onclick="copyJSON()">Copy</button>
+          </div>
+          <div class="output-body">
+            <pre id="rawOutput">Loading...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documentation Tab -->
+    <div class="tab-content" id="docs">
+      <div class="docs-content">
+        <h2>Features</h2>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>🌐 Browser Detection</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Name, version, rendering engine</p>
+          </div>
+          <div class="feature-item">
+            <strong>💻 OS Detection</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Windows, macOS, Linux, iOS, Android</p>
+          </div>
+          <div class="feature-item">
+            <strong>⚙️ Hardware Info</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">CPU cores, RAM, GPU, Apple Silicon</p>
+          </div>
+          <div class="feature-item">
+            <strong>🌍 Network Info</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Public IP, ISP, country (cached)</p>
+          </div>
+          <div class="feature-item">
+            <strong>📱 Screen Info</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Resolution, pixel ratio, orientation</p>
+          </div>
+          <div class="feature-item">
+            <strong>🔋 Battery Status</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Charging state, level percentage</p>
+          </div>
+        </div>
+
+        <h2>Installation</h2>
+        
+        <h3>Package Manager</h3>
+        <pre><code>npm install aki-info-detect
+# or
+yarn add aki-info-detect
+# or
+pnpm add aki-info-detect</code></pre>
+
+        <h3>CDN (ES Module)</h3>
+        <pre><code>&lt;script type="module"&gt;
+  import akiInfoDetect from 'https://unpkg.com/aki-info-detect/dist/aki-info-detect.js';
+  const info = await akiInfoDetect();
+  console.log(info);
+&lt;/script&gt;</code></pre>
+
+        <h3>CDN (UMD)</h3>
+        <pre><code>&lt;script src="https://unpkg.com/aki-info-detect/dist/aki-info-detect.umd.cjs"&gt;&lt;/script&gt;
+&lt;script&gt;
+  akiInfoDetect().then(info => console.log(info));
+&lt;/script&gt;</code></pre>
+
+        <h2>Quick Start</h2>
+        <pre><code>import akiInfoDetect from 'aki-info-detect';
+
+// Get all info
+const info = await akiInfoDetect();
+console.log(info.browser);  // "Chrome 120.0"
+console.log(info.os.name);  // "macOS"
+console.log(info.CPU);      // "Apple M3 Pro"
+
+// Tree-shakeable imports
+import { detectBrowser, detectOS } from 'aki-info-detect';
+const browser = detectBrowser();
+const os = detectOS();</code></pre>
+
+        <h2>Server Configuration</h2>
+        <p>For deep hardware detection, configure your server to send Client Hints headers:</p>
+        
+        <h3>Express.js</h3>
+        <pre><code>app.use((req, res, next) => {
+  res.setHeader('Accept-CH', 
+    'Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, ' +
+    'Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness'
+  );
+  next();
+});</code></pre>
+
+        <h3>Nginx</h3>
+        <pre><code>add_header Accept-CH "Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness";</code></pre>
+
+        <h3>Vite</h3>
+        <pre><code>// vite.config.js
+export default {
+  server: {
+    headers: {
+      'Accept-CH': 'Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, ...'
+    }
+  }
+};</code></pre>
+
+        <h2>Bundle Size</h2>
+        <ul>
+          <li><strong>ES Module:</strong> 14.85 kB</li>
+          <li><strong>UMD:</strong> 9.38 kB</li>
+          <li><strong>Gzipped:</strong> ~3.8 kB</li>
+        </ul>
+
+        <h2>Browser Support</h2>
+        <p>All modern browsers with ES2020+ support:</p>
+        <ul>
+          <li>Chrome/Edge 90+</li>
+          <li>Firefox 88+</li>
+          <li>Safari 14+</li>
+          <li>Opera 76+</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- API Reference Tab -->
+    <div class="tab-content" id="api">
+      <div class="docs-content">
+        <h2>API Reference</h2>
+
+        <h3>Default Export: <code>akiInfoDetect()</code></h3>
+        <p>Returns a Promise that resolves to an object containing all detected information.</p>
+        <pre><code>const info = await akiInfoDetect();</code></pre>
+
+        <h3>Return Object</h3>
+        <pre><code>{
+  // Browser info
+  browser: string,          // "Chrome 120.0"
+  product: string,          // "Gecko"
+  manufacturer: string,     // "Google Inc."
+  isMobile: boolean,        // true/false
+  language: string,         // "en-US"
+  
+  // OS info
+  os: {
+    name: string,           // "macOS"
+    version: string,        // "14.1.2"
+    string: string          // "macOS 14.1.2"
+  },
+  
+  // Hardware
+  CPU: string,              // "Apple M3 Pro"
+  CPUCore: number,          // 12
+  arch: string,             // "arm64"
+  RAM: number,              // 16 (GB)
+  GPU: string,              // "Apple M3 Pro"
+  
+  // Battery
+  battery: {
+    isCharging: boolean,    // true/false
+    level: number           // 0-100
+  },
+  
+  // Methods
+  getScreen: () => Object,
+  getConnection: () => Object,
+  getIP: () => Promise&lt;string&gt;,
+  getISP: () => Promise&lt;string&gt;,
+  getCountry: () => Promise&lt;string&gt;,
+  getLocation: () => Promise&lt;Object&gt;
+}</code></pre>
+
+        <h3>Named Exports</h3>
+        
+        <h4><code>detectBrowser()</code></h4>
+        <p>Returns browser name and version.</p>
+        <pre><code>import { detectBrowser } from 'aki-info-detect';
+const browser = detectBrowser(); // "Chrome 120.0"</code></pre>
+
+        <h4><code>detectOS()</code></h4>
+        <p>Returns OS information.</p>
+        <pre><code>import { detectOS } from 'aki-info-detect';
+const os = detectOS();
+// { name: "macOS", version: "14.1.2", string: "macOS 14.1.2" }</code></pre>
+
+        <h4><code>getHardwareInfo()</code></h4>
+        <p>Returns CPU, GPU, RAM information (async).</p>
+        <pre><code>import { getHardwareInfo } from 'aki-info-detect';
+const hw = await getHardwareInfo();
+// { CPU: "...", cores: 12, arch: "...", RAM: 16, GPU: "..." }</code></pre>
+
+        <h4><code>getNetworkInfo()</code></h4>
+        <p>Returns network information with caching (async).</p>
+        <pre><code>import { getNetworkInfo } from 'aki-info-detect';
+const net = await getNetworkInfo();
+// { ip: "...", isp: "...", country: "..." }</code></pre>
+
+        <h4><code>getScreen()</code></h4>
+        <p>Returns screen dimensions and properties.</p>
+        <pre><code>import { getScreen } from 'aki-info-detect';
+const screen = getScreen();
+// { width: 1920, height: 1080, pixelRatio: 2, ... }</code></pre>
+
+        <h4><code>getBattery()</code></h4>
+        <p>Returns battery status (async).</p>
+        <pre><code>import { getBattery } from 'aki-info-detect';
+const battery = await getBattery();
+// { isCharging: true, level: 85 }</code></pre>
+
+        <h3>Caching</h3>
+        <p>Network requests (IP, ISP, Country) are cached for 1 hour to reduce API calls.</p>
+        <pre><code>// First call: fetches from API
+const ip1 = await info.getIP();
+
+// Within 1 hour: returns cached value
+const ip2 = await info.getIP();</code></pre>
+
+        <h3>Error Handling</h3>
+        <pre><code>try {
+  const info = await akiInfoDetect();
+  console.log(info.browser);
+} catch (error) {
+  console.error('Detection failed:', error);
+}</code></pre>
+
+        <h3>TypeScript Support</h3>
+        <p>Full TypeScript declarations included.</p>
+        <pre><code>import akiInfoDetect, { type DetectionResult } from 'aki-info-detect';
+
+const info: DetectionResult = await akiInfoDetect();</code></pre>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-links">
+        <a href="https://github.com/lacvietanh/akiInfoDetect.js">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/aki-info-detect">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M0 7.334v8h6.666v1.332H12v-1.332h12v-8H0zm6.666 6.664H5.334v-4H3.999v4H1.335V8.667h5.331v5.331zm4 0v1.336H8.001V8.667h5.334v5.332h-2.669v-.001zm12.001 0h-1.33v-4h-1.336v4h-1.335v-4h-1.33v4h-2.671V8.667h8.002v5.331zM10.665 10H12v2.667h-1.335V10z"/></svg>
+          npm
+        </a>
+        <a href="https://bundlephobia.com/package/aki-info-detect">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Size
+        </a>
+      </div>
+      <p class="footer-credit">MIT License · Made with ⚡ by <a href="https://github.com/lacvietanh">lacvietanh</a></p>
+    </footer>
+  </div>
+
+  <script type="module">
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.tab;
+        
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+
+    // Library loading
+    const isDev = location.port === '3000';
+    const module = isDev 
+      ? await import('/src/index.js')
+      : await import('./aki-info-detect.js');
+    
+    const akiInfoDetect = module.default;
+    let info = null;
+    let rawData = null;
+
+    async function init() {
+      try {
+        info = await akiInfoDetect();
+        
+        document.getElementById('browser').textContent = info.browser || '—';
+        document.getElementById('product').textContent = info.product || '—';
+        document.getElementById('isMobile').textContent = info.isMobile ? 'Yes' : 'No';
+        document.getElementById('language').textContent = info.language || '—';
+
+        document.getElementById('osName').textContent = info.os?.name || '—';
+        document.getElementById('osVersion').textContent = info.os?.version || '—';
+        document.getElementById('osString').textContent = info.os?.string || '—';
+
+        document.getElementById('cpu').textContent = info.CPU || '—';
+        document.getElementById('cpuCore').textContent = info.CPUCore ? `${info.CPUCore} cores` : '—';
+        document.getElementById('arch').textContent = info.arch || '—';
+
+        document.getElementById('ram').textContent = info.RAM ? `${info.RAM} GB` : '—';
+        document.getElementById('gpu').textContent = info.GPU || '—';
+        document.getElementById('manufacturer').textContent = info.manufacturer || '—';
+
+        if (info.battery?.level > 0) {
+          document.getElementById('batteryLevel').textContent = `${info.battery.level}%`;
+          document.getElementById('charging').textContent = info.battery.isCharging ? 'Yes ⚡' : 'No';
+        } else {
+          document.getElementById('batteryLevel').textContent = 'N/A';
+          document.getElementById('batteryLevel').className = 'value muted';
+          document.getElementById('charging').textContent = 'N/A';
+          document.getElementById('charging').className = 'value muted';
+        }
+
+        const screen = info.getScreen();
+        document.getElementById('resolution').textContent = `${screen.width} × ${screen.height}`;
+        document.getElementById('pixelRatio').textContent = `${screen.pixelRatio}x`;
+        document.getElementById('colorDepth').textContent = `${screen.colorDepth}-bit`;
+
+        const conn = info.getConnection();
+        document.getElementById('connType').textContent = conn.type !== 'unknown' ? conn.type : '—';
+        document.getElementById('downlink').textContent = conn.downlink ? `${conn.downlink} Mbps` : '—';
+        document.getElementById('rtt').textContent = conn.rtt ? `${conn.rtt} ms` : '—';
+
+        rawData = { ...info };
+        delete rawData.getIP;
+        delete rawData.getISP;
+        delete rawData.getCountry;
+        delete rawData.getConnection;
+        delete rawData.getScreen;
+        delete rawData.getLocation;
+        rawData.screen = screen;
+        rawData.connection = conn;
+        document.getElementById('rawOutput').textContent = JSON.stringify(rawData, null, 2);
+
+      } catch (err) {
+        document.getElementById('rawOutput').textContent = 'Error: ' + err.message;
+        console.error(err);
+      }
+    }
+
+    window.fetchNetwork = async function() {
+      if (!info) return;
+      document.getElementById('ip').className = 'value loading';
+      document.getElementById('ip').textContent = 'Fetching...';
+      try {
+        const [ip, isp, country] = await Promise.all([
+          info.getIP(),
+          info.getISP(),
+          info.getCountry()
+        ]);
+        document.getElementById('ip').className = 'value';
+        document.getElementById('ip').textContent = ip || '—';
+        document.getElementById('isp').textContent = isp || '—';
+        document.getElementById('country').textContent = country || '—';
+      } catch (err) {
+        document.getElementById('ip').className = 'value error';
+        document.getElementById('ip').textContent = 'Error';
+      }
+    };
+
+    window.fetchLocation = async function() {
+      if (!info) return;
+      document.getElementById('lat').className = 'value loading';
+      document.getElementById('lat').textContent = 'Getting...';
+      try {
+        const loc = await info.getLocation();
+        document.getElementById('lat').className = 'value';
+        document.getElementById('lat').textContent = loc.latitude?.toFixed(6) || '—';
+        document.getElementById('lng').textContent = loc.longitude?.toFixed(6) || '—';
+        document.getElementById('accuracy').textContent = loc.accuracy ? `±${loc.accuracy}m` : '—';
+      } catch (err) {
+        document.getElementById('lat').className = 'value error';
+        document.getElementById('lat').textContent = 'Denied';
+        document.getElementById('lng').textContent = '—';
+        document.getElementById('accuracy').textContent = '—';
+      }
+    };
+
+    window.copyInstall = function() {
+      navigator.clipboard.writeText('npm install aki-info-detect');
+      const btn = document.querySelector('.install-box button');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    };
+
+    window.copyJSON = function() {
+      if (rawData) {
+        navigator.clipboard.writeText(JSON.stringify(rawData, null, 2));
+        const btn = document.querySelector('.output button');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+      }
+    };
+
+    init();
+  </script>
+</body>
+</html>

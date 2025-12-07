@@ -1,6 +1,6 @@
 {
   "name": "aki-info-detect",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Lightweight JavaScript library for detecting device, browser, hardware, and network information with UMD/ESM support",
   "author": "lacvietanh",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/lacvietanh/akiInfoDetect.js/issues"
   },
-  "homepage": "https://github.com/lacvietanh/akiInfoDetect.js#readme",
+  "homepage": "https://akiinfodetect-js.pages.dev/",
   "keywords": [
     "device-detection",
     "browser-detection",
