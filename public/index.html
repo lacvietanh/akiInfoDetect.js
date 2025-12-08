@@ -599,7 +599,7 @@
         <pre><code>const info = await akiInfoDetect();
 if (info.isMobile) {
   loadMobileUI();
-} else if (info.RAM < 4) {
+} else if (info.RAM &lt; 4) {
   enableLowMemoryMode();
 }</code></pre>
 
@@ -617,7 +617,7 @@ analytics.track('page_view', {
         <p>Enable or disable features based on browser capabilities:</p>
         <pre><code>const info = await akiInfoDetect();
 const chromeVersion = parseInt(info.browser.split(' ')[1]);
-if (info.browser.includes('Chrome') && chromeVersion >= 90) {
+if (info.browser.includes('Chrome') &amp;&amp; chromeVersion &gt;= 90) {
   enableAdvancedFeatures();
 }</code></pre>
 
@@ -634,7 +634,7 @@ if (info.CPU === 'Apple Silicon') {
         <p>Adapt content loading strategies based on connection quality:</p>
         <pre><code>const info = await akiInfoDetect();
 const conn = info.getConnection();
-if (conn.type === '4g' && conn.downlink > 5) {
+if (conn.type === '4g' &amp;&amp; conn.downlink &gt; 5) {
   loadHDContent();
 } else {
   loadCompressedContent();
