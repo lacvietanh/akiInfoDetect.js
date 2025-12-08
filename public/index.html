@@ -543,13 +543,316 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab active" data-tab="demo">Demo</button>
+      <button class="tab active" data-tab="intro">Intro</button>
+      <button class="tab" data-tab="demo">Demo</button>
       <button class="tab" data-tab="docs">Documentation</button>
       <button class="tab" data-tab="api">API Reference</button>
     </div>
 
+    <!-- Intro Tab -->
+    <div class="tab-content active" id="intro">
+      <div class="docs-content">
+        <h2>Welcome to aki-info-detect</h2>
+        <p>
+          <strong>aki-info-detect</strong> is a modern, lightweight JavaScript library that provides comprehensive device, browser, and system information detection for web applications. Built with performance and developer experience in mind, it leverages modern browser APIs including the Client Hints API for accurate hardware detection while maintaining a minimal footprint (~3.8 kB gzipped).
+        </p>
+        <p>
+          Whether you need to customize user experiences based on device capabilities, gather analytics data, or implement platform-specific features, aki-info-detect provides a unified, easy-to-use API that works seamlessly across all modern browsers.
+        </p>
+
+        <div class="note-box">
+          <strong>⚡ Quick Start:</strong> Install with <code>npm install aki-info-detect</code> and start detecting in seconds!
+        </div>
+
+        <h2>Key Benefits</h2>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <strong>🎯 Comprehensive Detection</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Browser, OS, CPU, GPU, RAM, network, battery, and more from a single library</p>
+          </div>
+          <div class="feature-item">
+            <strong>⚡ Performance-First</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Minimal bundle size with tree-shakeable exports—import only what you need</p>
+          </div>
+          <div class="feature-item">
+            <strong>🔮 Future-Proof</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Built on modern Web APIs with graceful fallbacks for older browsers</p>
+          </div>
+          <div class="feature-item">
+            <strong>💪 Apple Silicon Ready</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Advanced detection for Apple M-series chips (M1, M2, M3, M4, and beyond)</p>
+          </div>
+          <div class="feature-item">
+            <strong>🔒 Privacy-Conscious</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Implements caching for network requests to minimize external API calls</p>
+          </div>
+          <div class="feature-item">
+            <strong>📦 Zero Dependencies</strong>
+            <p style="font-size: 0.85rem; margin-top: 4px;">No external runtime dependencies—just pure, optimized JavaScript</p>
+          </div>
+        </div>
+
+        <h2>Common Use Cases</h2>
+        
+        <h3>1. Adaptive User Interfaces</h3>
+        <p>Dynamically adjust your UI based on device capabilities and screen properties:</p>
+        <pre><code>const info = await akiInfoDetect();
+if (info.isMobile) {
+  loadMobileUI();
+} else if (info.RAM &lt; 4) {
+  enableLowMemoryMode();
+}</code></pre>
+
+        <h3>2. Analytics & User Insights</h3>
+        <p>Gather detailed technical data to understand your user base:</p>
+        <pre><code>const info = await akiInfoDetect();
+analytics.track('page_view', {
+  browser: info.browser,
+  os: info.os.string,
+  device: info.isMobile ? 'mobile' : 'desktop',
+  gpu: info.GPU
+});</code></pre>
+
+        <h3>3. Feature Detection & Progressive Enhancement</h3>
+        <p>Enable or disable features based on browser capabilities:</p>
+        <pre><code>const info = await akiInfoDetect();
+const chromeVersion = parseInt(info.browser.split(' ')[1]);
+if (info.browser.includes('Chrome') &amp;&amp; chromeVersion &gt;= 90) {
+  enableAdvancedFeatures();
+}</code></pre>
+
+        <h3>4. Platform-Specific Optimization</h3>
+        <p>Optimize content delivery based on hardware capabilities:</p>
+        <pre><code>const info = await akiInfoDetect();
+if (info.CPU === 'Apple Silicon') {
+  loadWebPImages();
+} else if (info.GPU.includes('NVIDIA')) {
+  enableHardwareAcceleration();
+}</code></pre>
+
+        <h3>5. Network-Aware Loading</h3>
+        <p>Adapt content loading strategies based on connection quality:</p>
+        <pre><code>const info = await akiInfoDetect();
+const conn = info.getConnection();
+if (conn.type === '4g' &amp;&amp; conn.downlink &gt; 5) {
+  loadHDContent();
+} else {
+  loadCompressedContent();
+}</code></pre>
+
+        <h2>Comparison with Similar Libraries</h2>
+        <p>aki-info-detect stands out from other detection libraries with its modern approach and comprehensive feature set:</p>
+        
+        <div style="overflow-x: auto; margin: 20px 0;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--border);">
+                <th style="text-align: left; padding: 10px; color: var(--text-primary);">Feature</th>
+                <th style="text-align: center; padding: 10px; color: var(--accent);">aki-info-detect</th>
+                <th style="text-align: center; padding: 10px; color: var(--text-secondary);">Platform.js</th>
+                <th style="text-align: center; padding: 10px; color: var(--text-secondary);">UA-Parser.js</th>
+                <th style="text-align: center; padding: 10px; color: var(--text-secondary);">Detect.js</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Bundle Size (gzipped)</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">~3.8 kB</td>
+                <td style="padding: 10px; text-align: center;">~2.5 kB</td>
+                <td style="padding: 10px; text-align: center;">~9 kB</td>
+                <td style="padding: 10px; text-align: center;">Varies</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Client Hints API</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">GPU Detection</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Apple Silicon Detection</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅ (M1-MX)</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Network Info (IP/ISP)</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Battery & Geolocation</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">Tree-shakeable</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--text-muted);">⚠️</td>
+                <td style="padding: 10px; text-align: center; color: var(--text-muted);">⚠️</td>
+                <td style="padding: 10px; text-align: center; color: var(--text-muted);">⚠️</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px; color: var(--text-secondary);">TypeScript Support</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅ Full</td>
+                <td style="padding: 10px; text-align: center; color: var(--text-muted);">⚠️ Community</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; color: var(--text-secondary);">Active Maintenance</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--text-muted);">⚠️</td>
+                <td style="padding: 10px; text-align: center; color: var(--success);">✅</td>
+                <td style="padding: 10px; text-align: center; color: var(--error);">❌ Archived</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Key Differentiators</h3>
+        <ul>
+          <li><strong>vs. Platform.js:</strong> Modern evolution with Client Hints API support, hardware detection (GPU, RAM), and network capabilities</li>
+          <li><strong>vs. UA-Parser.js:</strong> Lighter bundle while providing more comprehensive information including hardware and network detection</li>
+          <li><strong>vs. Detect.js:</strong> Active maintenance (Detect.js is archived), smaller focused API, modern Web API integration</li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>General Questions</h3>
+        
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">What browsers does aki-info-detect support?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            All modern browsers with ES2020+ support: Chrome/Edge 89+, Firefox 88+, Safari 14+, Opera 76+. Client Hints features work best in Chromium-based browsers.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Does it work in Node.js or server-side environments?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            No, aki-info-detect is specifically designed for browser environments. It relies on browser APIs like <code>navigator</code>, <code>screen</code>, and Web APIs that are not available in Node.js.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">How accurate is the detection?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Very accurate for modern browsers that support Client Hints API. For browsers without Client Hints, it falls back to user agent parsing which is still reliable but less detailed. GPU and CPU detection is most accurate in Chromium-based browsers.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Is user agent string spoofing a concern?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            While user agents can be spoofed, Client Hints API provides more reliable detection. For critical functionality, always combine with feature detection rather than relying solely on browser/platform detection.
+          </p>
+        </details>
+
+        <h3>Privacy & Security</h3>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Does aki-info-detect collect or transmit user data?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            No. The library only detects information locally in the browser. The optional network info feature (<code>getNetworkInfo()</code>) makes a request to a public IP API, but this is only triggered when you explicitly call that method.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">What about user privacy?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            aki-info-detect is privacy-conscious. Network requests are cached for 1 hour to minimize external API calls, and all detection happens client-side. No data is sent to our servers.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Is it GDPR compliant?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Detection of browser/device information is generally considered functional data necessary for website operation. However, always review your local regulations and privacy policies, especially when using geolocation or storing detected data.
+          </p>
+        </details>
+
+        <h3>Technical Questions</h3>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Why do I need to configure server headers?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            The Client Hints API requires the server to explicitly request detailed information via <code>Accept-CH</code> headers. Without these headers, browsers will only provide basic user agent data. This is a browser security feature designed to enhance user privacy.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Can I use it with React, Vue, or other frameworks?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Absolutely! aki-info-detect is framework-agnostic. Check the Documentation tab for React Hook and Vue Composable examples.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">How do I reduce bundle size further?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Use tree-shakeable imports to include only the functions you need:
+            <pre style="margin-top: 8px;"><code>import { detectBrowser, detectOS } from 'aki-info-detect';</code></pre>
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Does it support TypeScript?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Yes, full TypeScript declarations are included in the package.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">How often is the network information cached?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Network info (IP, ISP, country) is cached for 1 hour by default. You can force a refresh by passing <code>true</code> to <code>getNetworkInfo(true)</code>.
+          </p>
+        </details>
+
+        <h3>Troubleshooting</h3>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Why am I getting generic hardware info?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Make sure your server is configured to send the required <code>Accept-CH</code> headers. Without these headers, detailed Client Hints data won't be available. Check the Documentation tab for server configuration examples.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">Why is GPU detection returning "Unknown"?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            GPU detection works best in Chromium browsers with Client Hints. Safari and Firefox have limited support. Also, some browsers may restrict this information for privacy reasons.
+          </p>
+        </details>
+
+        <details style="margin: 10px 0; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+          <summary style="font-weight: 500; color: var(--text-primary); cursor: pointer;">The library says "Unknown" for many fields. What's wrong?</summary>
+          <p style="margin-top: 10px; color: var(--text-secondary);">
+            Check browser console for errors, ensure you're using a supported browser version, and verify that your server is sending proper Client Hints headers (see the Documentation tab for Server Configuration).
+          </p>
+        </details>
+
+        <div class="note-box" style="margin-top: 24px;">
+          <strong>🚀 Ready to get started?</strong> Check out the <strong>Demo</strong> tab to see the library in action, or visit the <strong>Documentation</strong> tab for installation instructions and code examples.
+        </div>
+      </div>
+    </div>
+
     <!-- Demo Tab -->
-    <div class="tab-content active" id="demo">
+    <div class="tab-content" id="demo">
       <div class="note-box">
         <strong>⚠️ Server Headers Required:</strong> For deep hardware detection via Client Hints API, configure: 
         <code>Accept-CH: Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-Arch, Sec-CH-UA-Bitness</code>
